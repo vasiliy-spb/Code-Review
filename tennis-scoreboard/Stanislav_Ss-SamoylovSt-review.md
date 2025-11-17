@@ -683,6 +683,52 @@ PlayerScoreDto player1
 - Повторить и разобрать на примерах принципы SOLID (для начала SRP)
 - Почитать главы, которые привлекут внимание из Чистого кода Роберта Мартина
 - Для удобного запуска из Idea CE можно настроить плагины Smart Tomcat или Jetty (для Maven проекта)/Gretty (для Gradle)
+- Для подключения к БД во время работы приложения можно создать 
+- Чтобы визуально контролировать состояние БД и быстро находить проблемы с сохранением данных можно создать класс дающий доступ к консоли БД H2. Но нужно не забыть удалить его перед деплоем.
+<details>
+    <summary><b>Для этого достаточно добавить в проект этот класс</b></summary>
+    
+```java
+/**
+ * Инициализатор консоли H2 базы данных
+ * При старте приложения запускает веб-консоль H2 на порту 8082
+ * Консоль доступна по адресу: http://localhost:8082
+ */
+@WebListener
+public class H2ConsoleInitializer implements ServletContextListener {
+
+    private Server webServer;
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        try {
+            webServer = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
+            webServer.start();
+
+            System.out.println("==========================================");
+            System.out.println("H2 Console started successfully!");
+            System.out.println("Web Console URL: http://localhost:8082");
+            System.out.println("JDBC URL: jdbc:h2:mem:db");
+            System.out.println("User Name: sa");
+            System.out.println("Password: [empty]");
+            System.out.println("==========================================");
+
+        } catch (SQLException e) {
+            System.err.println("Failed to start H2 Console: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        if (webServer != null) {
+            webServer.stop();
+        }
+        System.out.println("H2 Console stopped");
+    }
+}
+```
+    
+</details>
 
 ## Плюсы
 - разделение на слои (Servlet -> Service -> DAO) — верный архитектурный подход
