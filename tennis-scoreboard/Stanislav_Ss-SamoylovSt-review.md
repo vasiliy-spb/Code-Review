@@ -33,10 +33,8 @@
 
 #### То есть например в match-score.jsp
 
-- строка
-    28. `<a class="nav-link" href="/matches">Matches</a>` -> `<a class="nav-link" href="${pageContext.request.contextPath}/matches">Matches</a>`
-- строка
-    56. `<form action="/match-score" method="post">` -> `<form action="${pageContext.request.contextPath}/match-score" method="post">`
+- строка 28. `<a class="nav-link" href="/matches">Matches</a>` -> `<a class="nav-link" href="${pageContext.request.contextPath}/matches">Matches</a>`
+- строка 56. `<form action="/match-score" method="post">` -> `<form action="${pageContext.request.contextPath}/match-score" method="post">`
 
 ```
 В Idea есть возможность изменить сразу все вхождения подстроки в файле. Для этого можно в jsp файле:
@@ -57,7 +55,6 @@
 9. На странице `winner.jsp`, кажется условие:
 
 ```html
-
 <c:when test="${not empty winnerName}">
 ```
 
@@ -66,7 +63,6 @@
 А также не существует ситуации, когда срабатывает блок:
 
 ```html
-
 <c:otherwise>
     <div class="winner-name">${loserName}</div>
     <div class="congratulations">Defeat</div>
@@ -100,9 +96,9 @@ public class MatchListDto {
 
 ```java
 public record MatchListDto(
-        String playerOneName,
-        String playerTwoName,
-        String winnerName
+    String playerOneName,
+    String playerTwoName,
+    String winnerName
 ) {
 }
 ```
@@ -113,8 +109,8 @@ public record MatchListDto(
 
 ```java
 public boolean isFinish(){
-        return isFinish;
-        }
+    return isFinish;
+}
 ```
 
 Посмотреть, как выглядит класс со сгенерированным кодом можно в `build/classes/java/main/dto/MatchBoardDto.class` после
@@ -142,11 +138,11 @@ public boolean isFinish(){
 - всю пользу метода
 
 ```java
-public PlayerNameDto convertToPlayerNameDto(PlayerScoreDto player){
-        PlayerNameDto playerNameDto=new PlayerNameDto();
-        playerNameDto.setName(player.getName());
-        return playerNameDto;
-        }
+public PlayerNameDto convertToPlayerNameDto(PlayerScoreDto player) {
+    PlayerNameDto playerNameDto=new PlayerNameDto();
+    playerNameDto.setName(player.getName());
+    return playerNameDto;
+}
 ```
 
 можно получить вызовом `player.getName()` в нужном месте.
@@ -171,7 +167,7 @@ public PlayerNameDto convertToPlayerNameDto(PlayerScoreDto player){
 
 ```java
 HttpServletRequest req=(HttpServletRequest)request;
-        HttpServletResponse resp=(HttpServletResponse)response;
+HttpServletResponse resp=(HttpServletResponse)response;
 ```
 
 - названия методов принято делать глаголами: `exceptionHandle` — существительное, `handleException` — глагол.
@@ -198,7 +194,6 @@ private String name;
 или так:
 
 ```java
-
 @Table(name = "players", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"name"})
 })
@@ -208,7 +203,6 @@ public class Player
 или так:
 
 ```java
-
 @Table(name = "players", indexes = {
         @Index(name = "uq_players_name", columnList = "name", unique = true)
 })
@@ -291,11 +285,11 @@ FROM Match m WHERE m.player1.id = :id OR m.player2.id = :id
 
 ```java
 catch(NoResultException e){
-        if(em.getTransaction().isActive()){
+    if(em.getTransaction().isActive()){
         em.getTransaction().rollback();
-        }
-        return null;
-        }
+    }
+    return null;
+}
 ```
 
 - необъяснимо разные имена одинаковых параметров в методах `Player findPlayerByName(PlayerNameDto player1)`
@@ -327,13 +321,13 @@ catch(NoResultException e){
 
 ```java
 List<Match> findAllPaginated(int offset,int limit){
-        ...
-        List<Match> matches=em.createQuery(FIND_ALL_JPQL,Match.class)
-        .setFirstResult(offset)
-        .setMaxResults(limit)
-        .getResultList();
-        ...
-        }
+    ...
+    List<Match> matches=em.createQuery(FIND_ALL_JPQL,Match.class)
+            .setFirstResult(offset)
+            .setMaxResults(limit)
+            .getResultList();
+    ...
+}
 ```
 
 - ❗️в этом классе не хватает метода, который возвращает список матчей с пагинацией и отфильтрованных по имени игрока —
@@ -368,8 +362,8 @@ List<Match> findAllPaginated(int offset,int limit){
 
 ```java
 if(playerDao.findPlayerByName(player)==null){
-        playerDao.createPlayer(player);
-        }
+    playerDao.createPlayer(player);
+}
 ```
 
 Между проверкой и сохранением игрока другой поток может создать игрока с тем же именем. И тогда при сохранении возникнет
@@ -385,7 +379,7 @@ if(playerDao.findPlayerByName(player)==null){
 
 ```java
 Player winner=playerForMatch2;
-        matchForSave.setWinner(winner);
+matchForSave.setWinner(winner);
 ```
 
 - вычисление смещения для корректного отображения матчей на странице должно происходить в
@@ -444,21 +438,21 @@ MatchScoreService matchScoreService=new MatchScoreService();
 
 ```java
 PlayerScoreDto temp=new PlayerScoreDto();
-        if(playerWinsPoint.equals("player1")){
-        temp=tiebreak(player1);
-        }else if(playerWinsPoint.equals("player2")){
-        temp=tiebreak(player2);
-        }
-        return temp;
+if(playerWinsPoint.equals("player1")){
+    temp=tiebreak(player1);
+}else if(playerWinsPoint.equals("player2")){
+    temp=tiebreak(player2);
+}
+return temp;
 ```
 
 можно заменить на:
 
 ```java
 if(playerWinsPoint.equals("player1")){
-        return tiebreak(player1);
-        }
-        return tiebreak(player2);
+    return tiebreak(player1);
+}
+return tiebreak(player2);
 ```
 
 - ❗️класс не отображает логику тай-брейка
@@ -535,12 +529,12 @@ if(playerWinsPoint.equals("player1")){
 
 ```java
 if(playerService.findPlayerByName(p1)==null){
-        playerService.createPlayer(p1);
-        System.out.println("player1 save");
-        }else{
-        p1.setName(playerService.findPlayerByName(p1).getName());
-        System.out.println("### player "+p1+" already exists ###");
-        }
+    playerService.createPlayer(p1);
+    System.out.println("player1 save");
+}else{
+    p1.setName(playerService.findPlayerByName(p1).getName());
+    System.out.println("### player "+p1+" already exists ###");
+}
 ```
 
 в строке `p1.setName(playerService.findPlayerByName(p1).getName())` ищется игрок по имени, чтобы получить его имя
@@ -549,14 +543,14 @@ if(playerService.findPlayerByName(p1)==null){
 
 ```java
 }else{
-        if(playerOne.equals(playerTwo)){
+    if(playerOne.equals(playerTwo)){
         ...
         req.getRequestDispatcher("/new-match.jsp").forward(req,resp);
-        }else if(playerOne.length()>20||playerTwo.length()>20){
+    }else if(playerOne.length()>20||playerTwo.length()>20){
         ...
         req.getRequestDispatcher("/new-match.jsp").forward(req,resp);
-        }
-        }
+    }
+}
 ```
 
 надо добавить return, потому что иначе выполнение метода `doPost()` продолжается, что приводит к созданию матча даже при
@@ -566,7 +560,7 @@ if(playerService.findPlayerByName(p1)==null){
 
 ```java
 String playerOne=req.getParameter("playerOne");
-        String playerTwo=req.getParameter("playerTwo");
+String playerTwo=req.getParameter("playerTwo");
 ```
 
 - валидацих входных данных следует вынести в классы валидаторов. В зависимостях проекта
@@ -583,9 +577,9 @@ String playerOne=req.getParameter("playerOne");
 
 ```java
 if(player1Win){
-        matchScoreService.selectPlayerToChangeScore(playerButton,matchBoardDto);
-        ...
-        }
+    matchScoreService.selectPlayerToChangeScore(playerButton,matchBoardDto);
+    ...
+}
 ```
 
 - флаг завершения матча устанавливается `matchBoardDto.setFinish(true)`, но матч не удаляется из хранилища и может быть
@@ -617,7 +611,6 @@ if(player1Win){
 - ❗️учётные данные
 
 ```xml
-
 <property name="jakarta.persistence.jdbc.user" value="sa"/>
 <property name="jakarta.persistence.jdbc.password" value=""/>
 ```
@@ -649,15 +642,15 @@ testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
   случае (`firstPlayerWin` и `secondPlayerWin`) префиксы имён переменных отличаются явно — это немного ускоряет
   написание кода.
 - ❗️Имена переменных и названия методов. Этому можно посвятить отдельное ревью.
-  Они не только вводят в заблуждение, но не отличаются однородностью. Встречаются:
+  Они не только вводят в заблуждение, но и не отличаются однородностью. Встречаются:
 
 ```java
 PlayerScoreDto playerScoreDto1;
-        String playerOneName;
-        Player player1;
-        Player playerForMatch1
-        String playerOne
-        PlayerScoreDto player1
+String playerOneName;
+Player player1;
+Player playerForMatch1
+String playerOne
+PlayerScoreDto player1
 ```
 
 Во всём проекте понятности имён следует уделить большое внимание. Следует называть методы так, чтобы другой разработчик
