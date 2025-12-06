@@ -11,7 +11,9 @@
 
 ## Функциональный обзор <a id="functional-overview"></a>
 
-[перейти в раздел MatchesServlet](#matchesservlet)
+<div align="right">
+
+[перейти в раздел MatchesServlet](#matchesservlet)</div>
 
 - нет валидации имён игроков — стоит сделать ограничения на длину, отсутствие цифр, допустимые символы
 - если имя одного игрока будет значительно длиннее имени другого, то табло со счётом сместится от центра страницы, а также кнопка игрока с длинным именем будет значительно больше кнопки игрока с коротким именем ![](images/Alex46volokno-esipovAlex/Screenshot_01.png)
@@ -321,8 +323,9 @@ public enum GameState {
 - от чистой ответственности DTO класс отделяет то, что он частично участвует в бизнес-логике
 
 ### WinnerResponse
+<div align="right">
 
-[перейти в раздел MatchScoreServlet](#matchscoreservlet)
+[перейти в раздел MatchScoreServlet](#matchscoreservlet)</div>
 
 - класс используется как DTO, поэтому стоит перенести его в соответствующий пакет и можно добавить суффикс `Dto` в название
 - если провести небольшой рефакторинг метода `checkWin()` в MatchService
@@ -898,7 +901,7 @@ private Page<Match> getPageMatch(PageParam pageParam) {
     return new Page<>(page, pageNumber, pageCount);
 }
 
-private Page<Match> getPageMatchByPlayerName(PageParam pageParam, String playerName) { // .есть дублирующийся код с getPageMatch
+private Page<Match> getPageMatchByPlayerName(PageParam pageParam, String playerName) {
     int pageNumber = pageParam.pageNumber();
     int size = pageParam.size();
     int firstResult = (pageNumber - 1) * size;
@@ -1181,8 +1184,9 @@ public void init() throws ServletException {
 - чтобы создание таблиц БД происходило при старте приложения, можно реализовать этот класс как WebListener — это также позволит корректно создавать и закрывать SessionFactory при старте и остановке приложения.
 
 ## JSP
+<div align="right">
 
-[перейти в раздел Servlet](#servlet)
+[перейти в раздел Servlet](#servlet)</div>
 
 - ❗️JSP страницы должны быть в папке `WEB-INF`, чтобы к ним не было прямого доступа. Файлы из этой папки нельзя запросить напрямую, только через сервлеты.
 - ❗️все поля ввода имеют уязвимость к XSS. Для проверки можно ввести строку `<script>alert('XSS')</script>` в поле имени игрока на странице создания матча или в поле фильтра по имени на странице завершённых матчей. Это позволяет выполнить любой скрипт. Исправить это можно перейдя на использование JSTL (JavaServer Pages Standard Tag Library).
@@ -1249,7 +1253,9 @@ hibernate.connection.password=
 
 ### @ToString и @Entity <a id="tostring-entity"></a>
 
-[перейти в раздел Match](#match)
+<div align="right">
+
+[перейти в раздел Match](#match)</div>
 
 <details>
 
@@ -1291,8 +1297,9 @@ hibernate.connection.password=
 
 
 ### @EqualsAndHashCode и @Entity <a id="equalsandhashcode-entity"></a>
+<div align="right">
 
-[перейти в раздел Player](#player)
+[перейти в раздел Player](#player)</div>
 
 <details>
 
@@ -1359,7 +1366,9 @@ public class ParentEntity {
 
 ### Почему стоит избегать возврата null <a id="avoid-returning-null-reason"></a>
 
-[перейти в раздел MatchService](#matchservice)
+<div align="right">
+
+[перейти в раздел MatchService](#matchservice)</div>
 
 <details>
 
@@ -1389,7 +1398,9 @@ public class ParentEntity {
 
 ### Запуск консоли для БД H2 <a id="h2-console"></a>
 
-[перейти в раздел Может быть полезным](#may-be-useful)
+<div align="right">
+
+[перейти в раздел Может быть полезным](#may-be-useful)</div>
 
 <details>
 
@@ -1443,7 +1454,9 @@ public class H2ConsoleInitializer implements ServletContextListener {
 
 ### Закрытие ресурсов в try <a id="close-resources-in-try"></a>
 
-[перейти в раздел CrudRepository](#crudrepository)
+<div align="right">
+
+[перейти в раздел CrudRepository](#crudrepository)</div>
 
 <details>
 
